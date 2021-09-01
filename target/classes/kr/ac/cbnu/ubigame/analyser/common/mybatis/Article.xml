@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Article">
+	<insert id="InsertArticle" parameterType="list">
+		INSERT INTO ARTICLE
+		(
+			journal, targetCompany, articleTitle, articleBody, date, targetUrl, journalId
+		) 
+		VALUES
+		<foreach item="item" collection="list" open="" separator="," close="">
+			(#{item.journal},#{item.targetCompany},#{item.articleTitle},#{item.articleBody},#{item.date},#{item.targetUrl},#{item.journalId})
+		</foreach>
+	</insert>
+    
+    <select id="getId" parameterType="java.lang.String" resultType="java.lang.Integer">
+     	SELECT id 
+     	FROM ARTICLE 
+     	WHERE(
+     		targetURL = #{targetURL}
+     	)
+    </select>
+    
+    <select id="associationWord" parameterType="WebDatatype" resultType="java.lang.Integer">
+    	SELECT id 
+    	FROM ARTICLE
+    	WHERE (	SELECT journal = #{journal}
+    			FROM ARTICLE
+    			WHERE(SELECT journalID = #{journalID}
+    					FROM ARTICLE
+    			)
+    			
+    	)
+    </select>
+   
+   
+	<insert id="ignoreDataInsert" parameterType="WebDatatype">
+		INSERT ignore INTO ARTICLE
+		(
+				journal, targetCompany, articleTitle, articleBody, date, targetUrl, journalId
+		)
+		VALUES
+		(
+		 	#{journal}, #{targetCompany}, #{articleTitle}, #{articleBody}, #{date}, #{targetUrl}, #{journalId}
+		)
+		<selectKey keyProperty = "id" resultType = "java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	
+	<insert id="insertNonPressData" parameterType ="NonPressDatatype">
+		INSERT INTO NONPRESS
+		(
+			targetURL, press, articleDate, articleTitle
+		)	
+		VALUES
+		(
+			#{targetURL}, #{press}, #{articleDate}, #{articleTitle}
+		)
+	</insert>
+    
+	
+</mapper>
+

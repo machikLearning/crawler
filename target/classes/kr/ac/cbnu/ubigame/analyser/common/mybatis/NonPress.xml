@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NonPress">
+	<insert id="insertNonPressData" parameterType="NonPressDatatype">
+		INSERT INTO NonPress
+		(
+			targetURL,press,articleTitle,articleDate
+		) 
+		VALUES
+		(
+		 	#{targetURL}, #{press}, #{articleTitle}, #{articleDate}
+		)
+	</insert>
+	
+	<select id="selectURL" resultType="CompanyDatatype">
+		SELEECT * FROM NONPRESS
+	</select>
+   
+    <update id="modifyData" parameterType="NonPressDatatype">
+        UPDATE NONPRESS SET articleBody = #{articleBody} WHERE targetURL = #{targetURL}
+    </update>
+   
+    <select id="Getdate" parameterType="String" resultType="Date">
+    	SELECT MAX(date) FROM(
+    		SELECT * FROM ARTICLE WHERE targetCompany = #{targetCompany} 
+    	)
+    </select>
+	
+</mapper>
+
